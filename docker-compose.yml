@@ -1,0 +1,9 @@
+services:
+  todo-api:
+    build: .
+    ports:
+      - "8003:8002"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1

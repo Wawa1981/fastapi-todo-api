@@ -1,0 +1,13 @@
+[Unit]
+Description=FastAPI Todo App
+After=network.target
+
+[Service]
+User=itrasta
+WorkingDirectory=/home/itrasta/dev/fastapi-todo-api
+Environment=PATH=/home/itrasta/dev/fastapi-todo-api/.venv/bin
+ExecStart=/home/itrasta/dev/fastapi-todo-api/.venv/bin/uvicorn src.main:app --host 0.0.0.0 --port 8002
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
