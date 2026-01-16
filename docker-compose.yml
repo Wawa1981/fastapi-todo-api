@@ -2,7 +2,7 @@ services:
   todo-api:
     build: .
     ports:
-      - "8003:8002"
+      - "8003:8000"
     volumes:
       - .:/app
     environment:

@@ -9,25 +9,51 @@ interface Todo {
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8003';
 
   const fetchTodos = async () => {
-    const res = await fetch('http://localhost:8003/todos');
-    setTodos(await res.json());
+    try {
+      setLoading(true);
+      setError('');
+      console.log('Fetching from:', `${API_URL}/todos`);
+      const res = await fetch(`${API_URL}/todos`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setTodos(data);
+    } catch (err: any) {
+      console.error('Fetch error:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const addTodo = async () => {
-    await fetch('http://localhost:8003/todos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, completed: false })
-    });
-    setTitle('');
-    fetchTodos();
+    try {
+      setError('');
+      const res = await fetch(`${API_URL}/todos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, completed: false })
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setTitle('');
+      fetchTodos();
+    } catch (err: any) {
+      console.error('Add error:', err);
+      setError(err.message);
+    }
   };
 
   useEffect(() => {
     fetchTodos();
   }, []);
+
+  if (loading) return <div style={{padding: '20px'}}>Chargement...</div>;
+  if (error) return <div style={{padding: '20px', color: 'red'}}>Erreur: {error}</div>;
 
   return (
     <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
@@ -44,6 +70,8 @@ function App() {
           Ajouter
         </button>
       </div>
+
+      {error && <div style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
 
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {todos.map(todo => (
@@ -62,6 +90,10 @@ function App() {
           </li>
         ))}
       </ul>
+      
+      <div style={{marginTop: '20px', fontSize: '12px', color: '#666'}}>
+        Backend: {API_URL} | Status: ✅ Live
+      </div>
     </div>
   );
 }

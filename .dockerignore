@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.env
+
+# Node / frontend
+todo-frontend/node_modules/
+todo-frontend/build/
+todo-frontend/.cache/
+
+# Git
+.git/
+
+# Tests & cache
+.pytest_cache/
+.mypy_cache/
+
+# Local databases
+*.db
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
